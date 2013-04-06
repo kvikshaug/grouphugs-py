@@ -28,15 +28,10 @@ class Grouphugs():
             raise SystemExit(1)
 
         connection.add_global_handler("welcome", self.on_connect)
-        connection.add_global_handler("disconnect", self.on_disconnect)
-
         client.process_forever()
 
     def on_connect(self, connection, event):
         connection.join(self.options['channel'])
-
-    def on_disconnect(self, connection, event):
-        raise SystemExit()
 
 if __name__ == '__main__':
     ph = Grouphugs('localhost', '#test')
