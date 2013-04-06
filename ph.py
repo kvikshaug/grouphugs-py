@@ -11,7 +11,7 @@ import irc.client
 from logger import logger
 
 class Grouphugs():
-    def __init__(self, server, channel):
+    def __init__(self):
         try:
             config_file = 'config.json'
             with open(config_file) as f:
@@ -34,4 +34,4 @@ class Grouphugs():
         connection.join(self.options['channel'])
 
 if __name__ == '__main__':
-    ph = Grouphugs('localhost', '#test')
+    ph = Grouphugs()
