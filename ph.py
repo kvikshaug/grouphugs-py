@@ -3,6 +3,7 @@
 # stdlib
 import os
 import json
+import signal
 
 # 3rd party libs
 import irc.client
@@ -22,16 +23,25 @@ class Grouphugs():
 
         client = irc.client.IRC()
         try:
-            connection = client.server().connect(self.options['server'], self.options['port'], self.options['nickname'])
+            self.connection = client.server().connect(self.options['server'], self.options['port'], self.options['nickname'])
         except irc.client.ServerConnectionError as e:
             logger.error(e)
             raise SystemExit(1)
 
-        connection.add_global_handler("welcome", self.on_connect)
+        # Attach management signals
+        signal.signal(signal.SIGINT, self.shutdown_handler)
+        signal.signal(signal.SIGTERM, self.shutdown_handler)
+
+        self.connection.add_global_handler("welcome", self.on_connect)
         client.process_forever()
 
     def on_connect(self, connection, event):
-        connection.join(self.options['channel'])
+        self.connection.join(self.options['channel'])
+
+    def shutdown_handler(self, signum, frame):
+        logger.info("Caught shutdown signal, shutting down.")
+        if self.connection.is_connected():
+            self.connection.quit("Caught shutdown signal, laters.")
 
 if __name__ == '__main__':
     ph = Grouphugs()
