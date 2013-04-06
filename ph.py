@@ -1,10 +1,13 @@
 #! /usr/bin/env python
 
+# stdlib
 import os
 import json
 
+# 3rd party libs
 import irc.client
 
+# local ocde
 from logger import logger
 
 class Grouphugs():
