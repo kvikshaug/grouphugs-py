@@ -11,9 +11,7 @@ import irc.client
 from logger import logger
 
 class Grouphugs():
-
     def __init__(self, server, channel):
-
         try:
             config_file = 'config.json'
             with open(config_file) as f:
