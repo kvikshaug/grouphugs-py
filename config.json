@@ -1,0 +1,6 @@
+{
+    "server": "localhost",
+    "port": 6667,
+    "nickname": "ph",
+    "channel": "#test"
+}

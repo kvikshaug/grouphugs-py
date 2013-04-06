@@ -1,0 +1,2 @@
+distribute==0.6.34
+irc==8.1.1
