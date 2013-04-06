@@ -7,14 +7,17 @@ import signal
 
 # 3rd party libs
 import lurklib
+from events import Events
 
 # local ocde
 from logger import logger
+import modules
 
 class Grouphugs(lurklib.Client):
     def __init__(self, options, *args, **kwargs):
         super(Grouphugs, self).__init__(*args, **kwargs)
         self.options = options
+        self.events = Events()
 
         # Attach management signals
         signal.signal(signal.SIGINT, self.shutdown_handler)
@@ -26,6 +29,9 @@ class Grouphugs(lurklib.Client):
     def shutdown_handler(self, signum, frame):
         logger.info("Caught shutdown signal, shutting down.")
         self.quit("Caught shutdown signal, laters.")
+
+    def on_chanmsg(self, sender, channel, message):
+        self.events.on_chanmsg(sender, channel, message)
 
 if __name__ == '__main__':
     try:
@@ -42,4 +48,5 @@ if __name__ == '__main__':
         port=options['port'],
         nick=tuple(options['nicks']),
         tls=False)
+    modules.init(ph)
     ph.mainloop()
