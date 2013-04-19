@@ -27,11 +27,32 @@ class Grouphugs(lurklib.Client):
         signal.signal(signal.SIGINT, shutdown_handler)
         signal.signal(signal.SIGTERM, shutdown_handler)
 
+    # lurklibs event methods
+    # We're not overriding all of them - for an exhaustive list, see lurklib/__init__.py
+
     def on_connect(self):
         self.join_(self.options['channel'])
 
+    def on_join(self, sender, channel):
+        self.events.on_join(sender, channel)
+
+    def on_part(self, sender, channel, reason):
+        self.events.on_part(sender, channel, reason)
+
     def on_chanmsg(self, sender, channel, message):
         self.events.on_chanmsg(sender, channel, message)
+
+    def on_privmsg(self, sender, message):
+        self.events.on_privmsg(sender, message)
+
+    def on_kick(self, sender, channel, who, reason):
+        self.events.on_kick(sender, channel, who, reason)
+
+    def on_nick(self, sender, new_nick):
+        self.events.on_nick(sender, new_nick)
+
+    def on_quit(self, sender, reason):
+        self.events.on_quit(sender, reason)
 
 if __name__ == '__main__':
     try:
