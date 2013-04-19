@@ -19,16 +19,16 @@ class Grouphugs(lurklib.Client):
         self.options = options
         self.events = Events()
 
+        def shutdown_handler(signum, frame):
+            logger.info("Caught shutdown signal, shutting down.")
+            self.quit("Caught shutdown signal, laters.")
+
         # Attach management signals
-        signal.signal(signal.SIGINT, self.shutdown_handler)
-        signal.signal(signal.SIGTERM, self.shutdown_handler)
+        signal.signal(signal.SIGINT, shutdown_handler)
+        signal.signal(signal.SIGTERM, shutdown_handler)
 
     def on_connect(self):
         self.join_(self.options['channel'])
-
-    def shutdown_handler(self, signum, frame):
-        logger.info("Caught shutdown signal, shutting down.")
-        self.quit("Caught shutdown signal, laters.")
 
     def on_chanmsg(self, sender, channel, message):
         self.events.on_chanmsg(sender, channel, message)
