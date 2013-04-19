@@ -6,4 +6,4 @@ class Echo():
         self.ph.events.on_chanmsg += self.on_chanmsg
 
     def on_chanmsg(self, sender, channel, message):
-        self.ph.privmsg(channel, "%s" % message)
+        self.ph.privmsg(channel, "%s%s" % (self.ph.options['modules']['echo']['prefix'], message))

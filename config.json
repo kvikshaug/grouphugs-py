@@ -2,5 +2,11 @@
     "server": "localhost",
     "port": 6667,
     "nicks": ["ph"],
-    "channel": "#test"
+    "channel": "#test",
+
+    "modules": {
+        "echo": {
+            "prefix": "foo: "
+        }
+    }
 }
