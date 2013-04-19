@@ -9,7 +9,7 @@ import signal
 import lurklib
 from events import Events
 
-# local ocde
+# local code
 from logger import logger
 import modules
 
