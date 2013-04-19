@@ -2,7 +2,10 @@
     "server": "localhost",
     "port": 6667,
     "nicks": ["ph"],
-    "channel": "#test",
+    "channels": [
+        "#test",
+        "#test2"
+    ],
 
     "modules": {
         "echo": {

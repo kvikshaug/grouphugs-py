@@ -31,7 +31,8 @@ class Grouphugs(lurklib.Client):
     # We're not overriding all of them - for an exhaustive list, see lurklib/__init__.py
 
     def on_connect(self):
-        self.join_(self.options['channel'])
+        for channel in self.options['channels']:
+            self.join_(channel)
 
     def on_join(self, sender, channel):
         self.events.on_join(sender, channel)
