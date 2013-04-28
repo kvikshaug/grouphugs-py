@@ -13,10 +13,12 @@ from events import Events
 from logger import logger
 
 class Grouphugs(lurklib.Client):
+
     def __init__(self, options, *args, **kwargs):
         super(Grouphugs, self).__init__(*args, **kwargs)
         self.options = options
         self.events = Events()
+        self.triggers = []
 
         def shutdown_handler(signum, frame):
             logger.info("Caught shutdown signal, shutting down.")
@@ -30,6 +32,11 @@ class Grouphugs(lurklib.Client):
 
     def is_op(self, nick, channel):
         return nick in self.channels[channel]['USERS'] and '@' in self.channels[channel]['USERS'][nick][2]
+
+    # Custom events
+
+    def add_trigger(self, trigger, func):
+        self.triggers.append({'trigger': trigger, 'func': func})
 
     # lurklibs event methods
     # We're not overriding all of them - for an exhaustive list, see lurklib/__init__.py
@@ -46,6 +53,9 @@ class Grouphugs(lurklib.Client):
 
     def on_chanmsg(self, sender, channel, message):
         self.events.on_chanmsg(sender, channel, message)
+        for trigger in self.triggers:
+            if message.startswith("!%s " % trigger['trigger']):
+                trigger['func'](sender, channel, message[len(trigger['trigger']) + 2:].strip())
 
     def on_privmsg(self, sender, message):
         self.events.on_privmsg(sender, message)
