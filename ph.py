@@ -21,7 +21,7 @@ class Grouphugs(lurklib.Client):
 
         def shutdown_handler(signum, frame):
             logger.info("Caught shutdown signal, shutting down.")
-            self.quit("Caught shutdown signal, laters.")
+            self.quit("Caught shutdown signal, shutting down.")
 
         # Attach management signals
         signal.signal(signal.SIGINT, shutdown_handler)
