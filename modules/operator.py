@@ -20,4 +20,8 @@ class Operator():
         if nick in self.ph.options['modules']['operator']['operators']:
             # Don't bother checking if the bot is actually op
             for channel in channels:
+                if self.ph.is_op(nick, channel):
+                    # User already has op
+                    continue
+
                 self.ph.cmode(channel, "+o %s" % nick)

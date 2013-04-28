@@ -27,6 +27,11 @@ class Grouphugs(lurklib.Client):
         signal.signal(signal.SIGINT, shutdown_handler)
         signal.signal(signal.SIGTERM, shutdown_handler)
 
+    # Abstractions for lurklibs silly ways to do some things
+
+    def is_op(self, nick, channel):
+        return nick in self.channels[channel]['USERS'] and '@' in self.channels[channel]['USERS'][nick][2]
+
     # lurklibs event methods
     # We're not overriding all of them - for an exhaustive list, see lurklib/__init__.py
 
