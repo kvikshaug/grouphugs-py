@@ -1,3 +1,7 @@
 Events==0.1.0
+Jinja2==2.6
+Pygments==1.6
+Sphinx==1.2b1
 distribute==0.6.34
+docutils==0.10
 lurklib==1.0.1
