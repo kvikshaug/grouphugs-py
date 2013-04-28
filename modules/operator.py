@@ -1,4 +1,4 @@
-class Operator():
+class Module():
     """Automatically give op to configured nicks"""
 
     def __init__(self, ph):

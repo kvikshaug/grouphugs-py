@@ -11,7 +11,6 @@ from events import Events
 
 # local code
 from logger import logger
-import modules
 
 class Grouphugs(lurklib.Client):
     def __init__(self, options, *args, **kwargs):
@@ -75,5 +74,10 @@ if __name__ == '__main__':
         port=options['port'],
         nick=tuple(options['nicks']),
         tls=False)
-    modules.init(ph)
+
+    # Instantiate defined modules
+    for name, options in ph.options['modules'].items():
+        module = __import__('modules.%s' % name, fromlist=[''])
+        module.Module(ph)
+
     ph.mainloop()

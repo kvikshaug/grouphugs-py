@@ -1,4 +1,4 @@
-class Echo():
+class Module():
     """Example module that echos all input"""
 
     def __init__(self, ph):
