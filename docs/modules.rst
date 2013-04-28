@@ -44,7 +44,7 @@ Events
 
 3. Let's extend our ``echo`` module to listen for channel messages.
 
-::
+.. code-block:: python
 
     class Module():
         """Example module that echos all input"""
