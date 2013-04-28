@@ -1,11 +1,11 @@
 class Module():
     """Automatically give op to configured nicks"""
 
-    def __init__(self, ph):
-        self.ph = ph
-        self.ph.events.on_join += self.on_join
-        self.ph.events.on_chanmsg += self.on_chanmsg
-        self.ph.events.on_nick += self.on_nick
+    def __init__(self, gh):
+        self.gh = gh
+        self.gh.events.on_join += self.on_join
+        self.gh.events.on_chanmsg += self.on_chanmsg
+        self.gh.events.on_nick += self.on_nick
 
     def on_join(self, sender, channel):
         self.give_op(sender[0], [channel])
@@ -14,14 +14,14 @@ class Module():
         self.give_op(sender[0], [channel])
 
     def on_nick(self, sender, new_nick):
-        self.give_op(new_nick, self.ph.options['channels'])
+        self.give_op(new_nick, self.gh.options['channels'])
 
     def give_op(self, nick, channels):
-        if nick in self.ph.options['modules']['operator']['operators']:
+        if nick in self.gh.options['modules']['operator']['operators']:
             # Don't bother checking if the bot is actually op
             for channel in channels:
-                if self.ph.is_op(nick, channel):
+                if self.gh.is_op(nick, channel):
                     # User already has op
                     continue
 
-                self.ph.cmode(channel, "+o %s" % nick)
+                self.gh.cmode(channel, "+o %s" % nick)

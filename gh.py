@@ -78,7 +78,7 @@ if __name__ == '__main__':
         logger.error("Couldn't find the configuration file, tried: %s" % os.path.abspath(config_file))
         raise SystemExit(1)
 
-    ph = Grouphugs(
+    gh = Grouphugs(
         options,
         server=options['server'],
         port=options['port'],
@@ -86,8 +86,8 @@ if __name__ == '__main__':
         tls=False)
 
     # Instantiate defined modules
-    for name, options in ph.options['modules'].items():
+    for name, options in gh.options['modules'].items():
         module = __import__('modules.%s' % name, fromlist=[''])
-        module.Module(ph)
+        module.Module(gh)
 
-    ph.mainloop()
+    gh.mainloop()

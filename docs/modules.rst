@@ -10,13 +10,13 @@ Let's add an example module, ``echo``, which will echo what anyone says in any c
     class Module():
         """Example module that echos all input"""
 
-        def __init__(self, ph):
-            self.ph = ph
+        def __init__(self, gh):
+            self.gh = gh
 
 Note:
 
 * A modules class name must always be ``Module``. The module name is defined in its *python module* (the file name).
-* The ``__init__`` method takes one argument (``ph``) which is the bot instance.
+* The ``__init__`` method takes one argument (``gh``) which is the bot instance.
 
 2. To load the module, add an entry for it in ``config.json``:
 
@@ -37,7 +37,7 @@ Note that the key name **must** match the file name.
 Events
 ------
 
-``ph`` uses `Events`_. It defines some of `lurklibs events`_, like ``on_chanmsg``, and modules can listen for any of those.
+``gh`` uses `Events`_. It defines some of `lurklibs events`_, like ``on_chanmsg``, and modules can listen for any of those.
 
 .. _Events: https://pypi.python.org/pypi/Events/0.1.0
 .. _lurklibs events: https://github.com/LK-/lurklib/blob/a861f35d880140422103dd78ec3239814e85fd7e/lurklib/__init__.py#L99
@@ -49,14 +49,14 @@ Events
     class Module():
         """Example module that echos all input"""
 
-        def __init__(self, ph):
-            self.ph = ph
-            self.ph.events.on_chanmsg += self.on_chanmsg
+        def __init__(self, gh):
+            self.gh = gh
+            self.gh.events.on_chanmsg += self.on_chanmsg
 
         def on_chanmsg(self, sender, channel, message):
-            self.ph.privmsg(channel, message))
+            self.gh.privmsg(channel, message))
 
-We defined the new ``on_chanmsg`` function, and added it to ph's ``on_chanmsg`` event (the ``events`` field). Note that we had to copy the ``on_chanmsg`` method signature from ``ph.py``.
+We defined the new ``on_chanmsg`` function, and added it to gh's ``on_chanmsg`` event (the ``events`` field). Note that we had to copy the ``on_chanmsg`` method signature from ``gh.py``.
 
 We then call ``privmsg`` on the bot (that's a ``lurklib`` method) with the same channel and message.
 
@@ -81,12 +81,12 @@ In ``config.json``:
         }
     }
 
-Then we update ``on_chanmsg`` in ``echo`` to get the config through ``ph``s ``option`` field:
+Then we update ``on_chanmsg`` in ``echo`` to get the config through ``gh``s ``option`` field:
 
 ::
 
     def on_chanmsg(self, sender, channel, message):
-        self.ph.privmsg(channel, "%s%s" % (self.ph.options['modules']['echo']['prefix'], message))
+        self.gh.privmsg(channel, "%s%s" % (self.gh.options['modules']['echo']['prefix'], message))
 
 Triggers
 --------
@@ -98,12 +98,12 @@ So far, so simple. However, many modules want to listen for some trigger keyword
     class Module():
         """Example module that echos all input"""
 
-        def __init__(self, ph):
-            self.ph = ph
-            self.ph.add_trigger("echo", self.on_echo)
+        def __init__(self, gh):
+            self.gh = gh
+            self.gh.add_trigger("echo", self.on_echo)
 
         def on_echo(self, sender, channel, message):
-            self.ph.privmsg(channel, "%s: %s" % (sender[0], message))
+            self.gh.privmsg(channel, "%s: %s" % (sender[0], message))
 
 * This will now call the ``on_echo`` method when a users triggers it (by saying "!echo ")
 * The method signature is equal to ``on_chanmsg``
