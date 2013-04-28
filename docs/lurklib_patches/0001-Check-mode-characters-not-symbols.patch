@@ -1,0 +1,25 @@
+diff --git a/lurklib/channel.py b/lurklib/channel.py
+index 50b6f01..7a834ad 100755
+--- a/lurklib/channel.py
++++ b/lurklib/channel.py
+@@ -419,7 +419,7 @@ class _Channel(object):
+             else:
+                 plus_mode = False
+             for mode in modes:
+-                if mode in self.priv_types:
++                if mode in self.priv_type_modes:
+                     target = targets[modes.index(mode)]
+                     if plus_mode:
+                         if mode == 'q':
+diff --git a/lurklib/variables.py b/lurklib/variables.py
+index be12560..f0453c6 100755
+--- a/lurklib/variables.py
++++ b/lurklib/variables.py
+@@ -41,6 +41,7 @@ class _Variables(object):
+ 
+     _crlf = '\r\n'
+     priv_types = ('~', '&', '@', '%', '+')
++    priv_type_modes = ('q', 'a', 'o', 'h', 'v')
+ 
+     def __init__(self):
+         """ Set instance-specific variables/objects. """
