@@ -21,5 +21,5 @@ The current documentation
 
    getting_started
    modules
-   lurklib_patches
    future_plans
+   lurklib_fork
