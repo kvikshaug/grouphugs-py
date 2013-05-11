@@ -33,6 +33,7 @@ Install our lurklib fork::
 
 Edit the config to your likings::
 
+    cp config.example.json config.json
     vim config.json
 
 Fire up the bot::

@@ -1,16 +1,15 @@
 {
     "server": "localhost",
     "port": 6667,
-    "nicks": ["ph"],
+    "nicks": ["gh"],
     "channels": [
-        "#test",
-        "#test2"
+        "#test"
     ],
 
     "modules": {
         "operator": {
             "operators": [
-                "murray"
+                "your_nick"
             ]
         }
     }
