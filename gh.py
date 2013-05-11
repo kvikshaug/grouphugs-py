@@ -21,6 +21,7 @@ class Grouphugs(lurklib.Client):
         self.events = Events()
         self.triggers = []
         self.max_line_chars = 440
+        self.max_spam_lines = 5
 
         def shutdown_handler(signum, frame):
             logger.info("Caught shutdown signal, shutting down.")
@@ -35,7 +36,7 @@ class Grouphugs(lurklib.Client):
     def is_op(self, nick, channel):
         return nick in self.channels[channel]['USERS'] and '@' in self.channels[channel]['USERS'][nick][2]
 
-    def privmsg(self, channel, message):
+    def privmsg(self, channel, message, spam=False):
         # Insert newlines for every 'max_line_chars' chars without any newlines
         message = re.sub(r'([^\n]{%s})' % self.max_line_chars, r'\1\n', message)
 
@@ -45,8 +46,13 @@ class Grouphugs(lurklib.Client):
         message = re.sub(r'\n$', '', message)    # Remove trailing newline
         message = re.sub(r'\t', '    ', message) # Replace tabs with spaces
 
-        # Send each line
+        # Send each line separately
         messages = message.split('\n')
+
+        if not spam and len(messages) > self.max_spam_lines:
+            super().privmsg(channel, "This would spam the channel with %s lines, replace ! with @ if you really want that." % len(messages))
+            return
+
         for message in messages:
             super().privmsg(channel, message)
 
@@ -72,7 +78,9 @@ class Grouphugs(lurklib.Client):
         self.events.on_chanmsg(sender, channel, message)
         for trigger in self.triggers:
             if message.startswith("!%s" % trigger['trigger']):
-                trigger['func'](sender, channel, message[len(trigger['trigger']) + 1:].strip())
+                trigger['func'](sender, channel, message[len(trigger['trigger']) + 1:].strip(), spam=False)
+            elif message.startswith("@%s" % trigger['trigger']):
+                trigger['func'](sender, channel, message[len(trigger['trigger']) + 1:].strip(), spam=True)
 
     def on_privmsg(self, sender, message):
         self.events.on_privmsg(sender, message)

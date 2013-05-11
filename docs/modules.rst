@@ -102,10 +102,12 @@ So far, so simple. However, many modules want to listen for some trigger keyword
             self.gh = gh
             self.gh.add_trigger("echo", self.on_echo)
 
-        def on_echo(self, sender, channel, message):
-            self.gh.privmsg(channel, "%s: %s" % (sender[0], message))
+        def on_echo(self, sender, channel, message, spam):
+            self.gh.privmsg(channel, "%s: %s" % (sender[0], message), spam)
 
-* This will now call the ``on_echo`` method when a users triggers it (by saying "!echo ")
+* This will now call the ``on_echo`` method when a users triggers it (by saying ``!echo ...``)
 * The method signature is equal to ``on_chanmsg``
-* The "!echo " part is stripped from the ``message`` argument
+* The ``!echo`` part is stripped from the ``message`` argument
 * Note that the ``sender`` argument isn't just the nick, but rather a tuple of (nick, ident, host)
+* If the spam trigger (``@echo``) is used, the same rules apply, and ``spam`` is set to ``True``.
+* The ``spam`` argument is forwarded to ``privmsg`` so gh knows whether or not to spam the channel.
