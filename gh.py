@@ -15,7 +15,7 @@ from logger import logger
 class Grouphugs(lurklib.Client):
 
     def __init__(self, options, *args, **kwargs):
-        super(Grouphugs, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.options = options
         self.events = Events()
         self.triggers = []
