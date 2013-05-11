@@ -54,8 +54,8 @@ class Grouphugs(lurklib.Client):
     def on_chanmsg(self, sender, channel, message):
         self.events.on_chanmsg(sender, channel, message)
         for trigger in self.triggers:
-            if message.startswith("!%s " % trigger['trigger']):
-                trigger['func'](sender, channel, message[len(trigger['trigger']) + 2:].strip())
+            if message.startswith("!%s" % trigger['trigger']):
+                trigger['func'](sender, channel, message[len(trigger['trigger']) + 1:].strip())
 
     def on_privmsg(self, sender, message):
         self.events.on_privmsg(sender, message)
