@@ -18,8 +18,7 @@ Set up the environment::
     virtualenv env
     . env/bin/activate # or whatever your shell needs
 
-Install the requirements. **Note that lurklib will fail because our fork isn't in pypi.**
-::
+Install the requirements::
 
     pip install -r requirements.txt
 
