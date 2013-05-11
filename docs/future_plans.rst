@@ -6,7 +6,6 @@ Most of this is stuff that's already implemented in the Java version of grouphug
 * Database access
 * github post-recieve hook
 * Help messages
-* Split messages longer than the IRC message limit (lurklib raises exception)
 * Preventing channel spam, separate spam trigger
 * Autoreconnect on server disconnect (might already exist in lurklib?)
 * Nickpoller (might already exist in lurklib?)

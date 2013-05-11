@@ -4,6 +4,7 @@
 import os
 import json
 import signal
+import re
 
 # 3rd party libs
 import lurklib
@@ -19,6 +20,7 @@ class Grouphugs(lurklib.Client):
         self.options = options
         self.events = Events()
         self.triggers = []
+        self.max_line_chars = 440
 
         def shutdown_handler(signum, frame):
             logger.info("Caught shutdown signal, shutting down.")
@@ -32,6 +34,21 @@ class Grouphugs(lurklib.Client):
 
     def is_op(self, nick, channel):
         return nick in self.channels[channel]['USERS'] and '@' in self.channels[channel]['USERS'][nick][2]
+
+    def privmsg(self, channel, message):
+        # Insert newlines for every 'max_line_chars' chars without any newlines
+        message = re.sub(r'([^\n]{%s})' % self.max_line_chars, r'\1\n', message)
+
+        message = re.sub(r'\r', '', message)     # Remove carriage returns
+        message = re.sub(r'\n+', '\n', message)  # Remove consecutive newlines
+        message = re.sub(r'^\n', '', message)    # Remove leading newline
+        message = re.sub(r'\n$', '', message)    # Remove trailing newline
+        message = re.sub(r'\t', '    ', message) # Replace tabs with spaces
+
+        # Send each line
+        messages = message.split('\n')
+        for message in messages:
+            super().privmsg(channel, message)
 
     # Custom events
 
