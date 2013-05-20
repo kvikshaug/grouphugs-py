@@ -12,6 +12,7 @@
             "operators": [
                 "your_nick"
             ]
-        }
+        },
+        "seen": {}
     }
 }
