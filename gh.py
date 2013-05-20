@@ -5,13 +5,15 @@ import os
 import json
 import signal
 import re
+import logging
+import logging.config
 
 # 3rd party libs
 import lurklib
 from events import Events
 
 # local code
-from logger import logger
+import logconf
 
 class Grouphugs(lurklib.Client):
 
@@ -22,9 +24,10 @@ class Grouphugs(lurklib.Client):
         self.triggers = []
         self.max_line_chars = 440
         self.max_spam_lines = 5
+        self.logger = logging.getLogger(__name__)
 
         def shutdown_handler(signum, frame):
-            logger.info("Caught shutdown signal, shutting down.")
+            self.logger.info("Caught shutdown signal, shutting down.")
             self.quit("Caught shutdown signal, shutting down.")
 
         # Attach management signals
@@ -95,6 +98,9 @@ class Grouphugs(lurklib.Client):
         self.events.on_quit(sender, reason)
 
 if __name__ == '__main__':
+    logging.config.dictConfig(logconf.LOGGING)
+    logger = logging.getLogger(__name__)
+
     try:
         config_file = 'config.json'
         with open(config_file) as f:

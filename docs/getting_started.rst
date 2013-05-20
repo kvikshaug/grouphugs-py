@@ -30,10 +30,11 @@ Install our lurklib fork::
     popd
     rm -r lurklib/
 
-Edit the config to your likings::
+Edit the config and logconfig to your likings::
 
     cp config.example.json config.json
-    vim config.json
+    cp logconf.example.py logconf.py
+    vim config.json logconf.py
 
 Fire up the bot::
 

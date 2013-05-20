@@ -1,12 +1,9 @@
-from logging.config import dictConfig
-import logging
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
         'simple': {
-            'format': '%(levelname)s %(asctime)s\n%(message)s\n'
+            'format': '%(levelname)s %(asctime)s: %(message)s\n'
         },
         'verbose': {
             'format': '\n%(levelname)s (%(name)s) %(asctime)s\n%(pathname)s:%(lineno)d in %(funcName)s\n%(message)s\n'
@@ -22,17 +19,11 @@ LOGGING = {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+            'formatter': 'simple',
         },
     },
-    'loggers': {
-        'grouphugs': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console', 'file'],
     },
 }
-
-dictConfig(LOGGING)
-logger = logging.getLogger('grouphugs')
