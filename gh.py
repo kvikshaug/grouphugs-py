@@ -19,6 +19,7 @@ class Grouphugs(lurklib.Client):
 
     def __init__(self, options, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.run_mainloop_forever = True
         self.options = options
         self.events = Events()
         self.triggers = []
@@ -27,12 +28,20 @@ class Grouphugs(lurklib.Client):
         self.logger = logging.getLogger(__name__)
 
         def shutdown_handler(signum, frame):
+            self.run_mainloop_forever = False
             self.logger.info("Caught shutdown signal, shutting down.")
             self.quit("Caught shutdown signal, shutting down.")
 
         # Attach management signals
         signal.signal(signal.SIGINT, shutdown_handler)
         signal.signal(signal.SIGTERM, shutdown_handler)
+
+    def mainloop(self):
+        while self.run_mainloop_forever:
+            try:
+                super().mainloop()
+            except Exception as e:
+                self.on_exeption(e)
 
     # Abstractions for lurklibs silly ways to do some things
 
@@ -96,6 +105,9 @@ class Grouphugs(lurklib.Client):
 
     def on_quit(self, sender, reason):
         self.events.on_quit(sender, reason)
+
+    def on_exeption(self, exception):
+        logger.exception(exception)
 
 if __name__ == '__main__':
     logging.config.dictConfig(logconf.LOGGING)
