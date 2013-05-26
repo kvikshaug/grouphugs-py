@@ -22,14 +22,6 @@ Install the requirements::
 
     pip install -r requirements.txt
 
-Install our lurklib fork::
-
-    git clone git://github.com/kvikshaug/lurklib.git
-    pushd lurklib/
-    python setup.py install
-    popd
-    rm -r lurklib/
-
 Edit the config and logconfig to your likings::
 
     cp config.example.json config.json
