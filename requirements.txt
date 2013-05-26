@@ -1,4 +1,4 @@
-Events==0.1.0
+-e git+git://github.com/oyvindio/events.git#egg=Events
 Jinja2==2.6
 Pygments==1.6
 Sphinx==1.2b1
