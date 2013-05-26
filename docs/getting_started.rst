@@ -24,9 +24,8 @@ Install the requirements::
 
 Edit the config and logconfig to your likings::
 
-    cp config.example.json config.json
-    cp logconf.example.py logconf.py
-    vim config.json logconf.py
+    cp config.{example.,}py
+    vim config.py
 
 Fire up the bot::
 

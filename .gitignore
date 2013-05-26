@@ -4,5 +4,4 @@ env/
 docs/_build/
 docs/_static/
 docs/_templates/
-config.json
-logconf.py
+config.py

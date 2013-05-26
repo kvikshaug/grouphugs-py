@@ -1,8 +1,6 @@
 #! /usr/bin/env python
 
 # stdlib
-import os
-import json
 import signal
 import re
 import logging
@@ -13,14 +11,12 @@ import lurklib
 from events import Events
 
 # local code
-import logconf
+import config
 
 class Grouphugs(lurklib.Client):
-
-    def __init__(self, options, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.run_mainloop_forever = True
-        self.options = options
         self.events = Events()
         self.triggers = []
         self.max_line_chars = 440
@@ -77,7 +73,7 @@ class Grouphugs(lurklib.Client):
     # We're not overriding all of them - for an exhaustive list, see lurklib/__init__.py
 
     def on_connect(self):
-        for channel in self.options['channels']:
+        for channel in config.CHANNELS:
             self.join_(channel)
 
     def on_join(self, sender, channel):
@@ -110,26 +106,16 @@ class Grouphugs(lurklib.Client):
         logger.exception(exception)
 
 if __name__ == '__main__':
-    logging.config.dictConfig(logconf.LOGGING)
+    logging.config.dictConfig(config.LOGGING)
     logger = logging.getLogger(__name__)
 
-    try:
-        config_file = 'config.json'
-        with open(config_file) as f:
-            options = json.loads(f.read())
-    except OSError:
-        logger.error("Couldn't find the configuration file, tried: %s" % os.path.abspath(config_file))
-        raise SystemExit(1)
-
-    gh = Grouphugs(
-        options,
-        server=options['server'],
-        port=options['port'],
-        nick=tuple(options['nicks']),
-        tls=False)
+    gh = Grouphugs(server=config.SERVER,
+                   port=config.PORT,
+                   nick=tuple(config.NICKS),
+                   tls=False)
 
     # Instantiate defined modules
-    for name, options in gh.options['modules'].items():
+    for name, options in config.MODULES.items():
         module = __import__('modules.%s' % name, fromlist=[''])
         module.Module(gh)
 

@@ -2,7 +2,8 @@ from __future__ import with_statement
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
-import json
+from os.path import dirname, split
+import sys
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -10,9 +11,9 @@ config = context.config
 
 # inject database_uri from config.json into the alembic config to
 # avoid duplicate config
-with open('config.json') as f:
-    options = json.loads(f.read())
-    config.set_main_option('sqlalchemy.url', options['database_uri'])
+sys.path.append(split(dirname(__name__))[0])
+import config as gh_config
+config.set_main_option('sqlalchemy.url', gh_config.DATABASE_URI)
 
 
 # Interpret the config file for Python logging.
