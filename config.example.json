@@ -14,5 +14,6 @@
             ]
         },
         "seen": {}
-    }
+    },
+    "database_uri": "driver://user:pass@host/database"
 }
