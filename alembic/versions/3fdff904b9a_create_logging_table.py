@@ -21,4 +21,4 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_tale('logs')
+    op.drop_table('logs')
