@@ -12,6 +12,6 @@ class Database():
         self.engine = sa.create_engine(config.DATABASE_URI)
 
     def hstore_table_for(self, name):
-        return sa.Table(name, self.__class__.Base.metadata,
+        return sa.Table(name, self.Base.metadata,
                         sa.Column('id', sa.Integer, primary_key=True),
                         sa.Column('data', MutableDict.as_mutable(pg.HSTORE)))
