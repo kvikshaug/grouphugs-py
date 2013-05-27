@@ -5,6 +5,7 @@ import signal
 import re
 import logging
 import logging.config
+from collections import namedtuple
 
 # 3rd party libs
 import lurklib
@@ -12,6 +13,8 @@ from events import Events
 
 # local code
 import config
+
+Sender = namedtuple('Sender', ['nick', 'ident', 'host'])
 
 class Grouphugs(lurklib.Client):
     def __init__(self, *args, **kwargs):
@@ -31,6 +34,9 @@ class Grouphugs(lurklib.Client):
         # Attach management signals
         signal.signal(signal.SIGINT, shutdown_handler)
         signal.signal(signal.SIGTERM, shutdown_handler)
+
+    def wrap_sender(self, sender):
+        return Sender(*sender)
 
     def mainloop(self):
         while self.run_mainloop_forever:
@@ -77,30 +83,30 @@ class Grouphugs(lurklib.Client):
             self.join_(channel)
 
     def on_join(self, sender, channel):
-        self.events.on_join(sender, channel)
+        self.events.on_join(self.wrap_sender(sender), channel)
 
     def on_part(self, sender, channel, reason):
-        self.events.on_part(sender, channel, reason)
+        self.events.on_part(self.wrap_sender(sender), channel, reason)
 
     def on_chanmsg(self, sender, channel, message):
-        self.events.on_chanmsg(sender, channel, message)
+        self.events.on_chanmsg(self.wrap_sender(sender), channel, message)
         for trigger in self.triggers:
             if message.startswith("!%s" % trigger['trigger']):
-                trigger['func'](sender, channel, message[len(trigger['trigger']) + 1:].strip(), spam=False)
+                trigger['func'](self.wrap_sender(sender), channel, message[len(trigger['trigger']) + 1:].strip(), spam=False)
             elif message.startswith("@%s" % trigger['trigger']):
-                trigger['func'](sender, channel, message[len(trigger['trigger']) + 1:].strip(), spam=True)
+                trigger['func'](self.wrap_sender(sender), channel, message[len(trigger['trigger']) + 1:].strip(), spam=True)
 
     def on_privmsg(self, sender, message):
-        self.events.on_privmsg(sender, message)
+        self.events.on_privmsg(self.wrap_sender(sender), message)
 
     def on_kick(self, sender, channel, who, reason):
-        self.events.on_kick(sender, channel, who, reason)
+        self.events.on_kick(self.wrap_sender(sender), channel, who, reason)
 
     def on_nick(self, sender, new_nick):
-        self.events.on_nick(sender, new_nick)
+        self.events.on_nick(self.wrap_sender(sender), new_nick)
 
     def on_quit(self, sender, reason):
-        self.events.on_quit(sender, reason)
+        self.events.on_quit(self.wrap_sender(sender), reason)
 
     def on_exeption(self, exception):
         logger.exception(exception)

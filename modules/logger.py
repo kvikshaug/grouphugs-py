@@ -13,7 +13,9 @@ class Module(Database):
         self.table = self.hstore_table_for('logs')
 
     def on_chanmsg(self, sender, channel, message):
-        msg = {'sender': '{0}!{1}@{2}'.format(*sender), 'channel': channel, 'message': message}
+        msg = {'nick': sender.nick, 'ident': sender.ident, 'host': sender.host,
+               'channel': channel, 'message': message}
         self.log.debug('inserting %s', msg)
         with self.engine.connect() as c:
-            c.execute(self.table.insert(), data=msg)
+            res = c.execute(self.table.insert(), data=msg)
+            self.log.info("inserted %s with id=%s", msg, res.inserted_primary_key)
