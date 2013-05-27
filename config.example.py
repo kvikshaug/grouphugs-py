@@ -1,3 +1,18 @@
+SERVER = 'localhost'
+PORT = 6667
+NICKS = ['test']
+CHANNELS = ['#test']
+MODULES = {
+    'confession': {},
+    'operator': {
+        'operators': [
+            'foo'
+            ]
+        },
+    'seen': {},
+    'logger': {}
+}
+DATABASE_URI = 'driver://user:pass@host/database'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
