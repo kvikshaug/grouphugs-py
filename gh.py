@@ -18,7 +18,8 @@ Sender = namedtuple('Sender', ['nick', 'ident', 'host'])
 
 class Grouphugs(lurklib.Client):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        self._args = args
+        self._kwargs = kwargs
         self.run_mainloop_forever = True
         self.events = Events()
         self.triggers = []
@@ -39,6 +40,7 @@ class Grouphugs(lurklib.Client):
         return Sender(*sender)
 
     def mainloop(self):
+        super().__init__(*self._args, **self._kwargs)
         while self.run_mainloop_forever:
             try:
                 super().mainloop()
