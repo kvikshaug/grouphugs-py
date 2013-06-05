@@ -18,9 +18,14 @@ Set up the environment::
     virtualenv env
     . env/bin/activate # or whatever your shell needs
 
-Install the requirements::
+Install the dependencies for running the bot::
 
     pip install -r requirements.txt
+
+Or, if you are going to mess with the code, install the development
+dependencies (this installs the runtime dependencies too)::
+
+    pip install -r development-requirements.txt
 
 Edit the config and logconfig to your likings::
 

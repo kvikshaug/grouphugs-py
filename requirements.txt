@@ -1,13 +1,8 @@
 -e git+git://github.com/oyvindio/events.git#egg=Events
-Jinja2==2.6
-Pygments==1.6
 SQLAlchemy==0.8.1
-Sphinx==1.2b1
 alembic==0.5.0
 beautifulsoup4==4.1.3
 distribute==0.6.34
-docutils==0.10
-nose==1.3.0
 psycopg2==2.5
 requests==1.2.3
 -e git+git://github.com/kvikshaug/lurklib.git#egg=lurklib
