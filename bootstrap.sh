@@ -11,8 +11,9 @@ ln -sf ~/etc/config.py config.py
 
 release=$(pwd)
 cd ~
-if [[ -f current ]]; then
-    mv -f current previous
+if [[ -e current ]]; then
+    rm -f previous
+    mv current previous
 fi
 ln -s "$release" current
 
