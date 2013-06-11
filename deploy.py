@@ -35,4 +35,4 @@ if __name__ == '__main__':
     check_call_remote('releases/{}/bootstrap.sh'.format(release))
 
     log.info('Running database migrations')
-    check_call_remote('current/env/bin/alembic upgrade head')
+    check_call_remote('cd current && env/bin/alembic upgrade head')
