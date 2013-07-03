@@ -8,81 +8,55 @@ import logging.config
 from collections import namedtuple
 
 # 3rd party libs
-import lurklib
 from events import Events
+from irc import Irc
 
 # local code
 import config
 
 Sender = namedtuple('Sender', ['nick', 'ident', 'host'])
 
-class Grouphugs(lurklib.Client):
-    def __init__(self, *args, **kwargs):
-        self._args = args
-        self._kwargs = kwargs
-        self.run_mainloop_forever = True
+class Grouphugs(object):
+    def __init__(self):
+        self.run_forever = True
         self.events = Events()
         self.triggers = []
-        self.max_line_chars = 440
         self.max_spam_lines = 5
         self.logger = logging.getLogger(__name__)
+        self.irc = Irc(config.SERVER, config.PORT, config.NICKS)
 
         def shutdown_handler(signum, frame):
-            self.run_mainloop_forever = False
+            self.run_forever = False
             self.logger.info("Caught shutdown signal, shutting down.")
             self.quit("Caught shutdown signal, shutting down.")
 
-        # Attach management signals
         signal.signal(signal.SIGINT, shutdown_handler)
         signal.signal(signal.SIGTERM, shutdown_handler)
 
-    def wrap_sender(self, sender):
-        return Sender(*sender)
-
-    def mainloop(self):
-        super().__init__(*self._args, **self._kwargs)
-        while self.run_mainloop_forever:
-            try:
-                super().mainloop()
-            except Exception as e:
-                self.on_exeption(e)
-
-    # Abstractions for lurklibs silly ways to do some things
+    def connect_and_loop(self):
+        try:
+            self.irc.connect()
+        except Exception as e:
+            logger.exception('Exception from asyncore loop', e)
 
     def is_op(self, nick, channel):
         return nick in self.channels[channel]['USERS'] and '@' in self.channels[channel]['USERS'][nick][2]
 
     def privmsg(self, channel, message, spam=False):
-        # Insert newlines for every 'max_line_chars' chars without any newlines
-        message = re.sub(r'([^\n]{%s})' % self.max_line_chars, r'\1\n', message)
-
-        message = re.sub(r'\r', '', message)     # Remove carriage returns
-        message = re.sub(r'\n+', '\n', message)  # Remove consecutive newlines
-        message = re.sub(r'^\n', '', message)    # Remove leading newline
-        message = re.sub(r'\n$', '', message)    # Remove trailing newline
         message = re.sub(r'\t', '    ', message) # Replace tabs with spaces
 
-        # Send each line separately
-        messages = message.split('\n')
-
-        if not spam and len(messages) > self.max_spam_lines:
-            super().privmsg(channel, "This would spam the channel with %s lines, replace ! with @ if you really want that." % len(messages))
+        if not spam and len(message) > 510 * self.max_spam_lines:
+            self.irc.privmsg(channel, "This would spam the channel with {} lines, replace ! with @ if you really want that.".format(len(message) / 510))
             return
 
-        for message in messages:
-            super().privmsg(channel, message)
-
-    # Custom events
+        self.irc.privmsg(channel, message)
 
     def add_trigger(self, trigger, func):
         self.triggers.append({'trigger': trigger, 'func': func})
 
-    # lurklibs event methods
-    # We're not overriding all of them - for an exhaustive list, see lurklib/__init__.py
-
     def on_connect(self):
         for channel in config.CHANNELS:
-            self.join_(channel)
+            self.irc.write('JOIN {}'.format(channel))
 
     def on_join(self, sender, channel):
         self.events.on_join(self.wrap_sender(sender), channel)
@@ -110,21 +84,15 @@ class Grouphugs(lurklib.Client):
     def on_quit(self, sender, reason):
         self.events.on_quit(self.wrap_sender(sender), reason)
 
-    def on_exeption(self, exception):
-        logger.exception(exception)
-
 if __name__ == '__main__':
     logging.config.dictConfig(config.LOGGING)
     logger = logging.getLogger(__name__)
 
-    gh = Grouphugs(server=config.SERVER,
-                   port=config.PORT,
-                   nick=tuple(config.NICKS),
-                   tls=False)
+    gh = Grouphugs()
 
     # Instantiate defined modules
     for name, options in config.MODULES.items():
         module = __import__('modules.%s' % name, fromlist=[''])
         module.Module(gh)
 
-    gh.mainloop()
+    gh.connect_and_loop()
